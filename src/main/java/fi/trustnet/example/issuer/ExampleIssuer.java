@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 
 import org.abstractj.kalium.NaCl.Sodium;
+import org.apache.commons.codec.binary.Hex;
 
 import com.github.jsonldjava.utils.JsonUtils;
 
@@ -23,13 +24,16 @@ public class ExampleIssuer {
 		byte[] issuerPrivateKey = new byte[Sodium.CRYPTO_SIGN_ED25519_SECRETKEYBYTES];
 		byte[] issuerPublicKey = new byte[Sodium.CRYPTO_SIGN_ED25519_PUBLICKEYBYTES];
 		EC25519Provider.get().generateEC25519KeyPairFromSeed(issuerPublicKey, issuerPrivateKey, issuerSeed.getBytes(StandardCharsets.UTF_8));
-		//		byte[] issuerPrivateKey = Hex.decodeHex("984b589e121040156838303f107e13150be4a80fc5088ccba0b0bdc9b1d89090de8777a28f8da1a74e7a13090ed974d879bf692d001cddee16e4cc9f84b60580".toCharArray());
 
 		String issuerDid = Sovrin.createDid(issuerSeed);
+		System.out.println("Issuer DID: " + issuerDid);
+		System.out.println("Issuer Private Key: " + Hex.encodeHexString(issuerPrivateKey));
+		System.out.println("Issuer Public Key: " + Hex.encodeHexString(issuerPublicKey));
 
 		// get subject DID
 
 		String subjectDid = Sovrin.createDid();
+		System.out.println("Subject DID: " + subjectDid);
 
 		// issue verifiable credential
 
@@ -50,12 +54,14 @@ public class ExampleIssuer {
 		String domain = null;
 		String nonce = "c0ae1c8e-c7e7-469f-b252-86e6a0e7387e";
 
+		// sign
+
 		Ed25519Signature2018LdSigner signer = new Ed25519Signature2018LdSigner(creator, created, domain, nonce, issuerPrivateKey);
 		LdSignature ldSignature = signer.sign(verifiableCredential.getJsonLdObject());
 
 		// output
 
-		System.out.println(ldSignature.getSignatureValue());
+		System.out.println("Signature Value: " + ldSignature.getSignatureValue());
 		System.out.println(JsonUtils.toPrettyString(verifiableCredential.getJsonLdObject()));
 	}
 }
