@@ -4,12 +4,12 @@ import java.io.File;
 
 import org.hyperledger.indy.sdk.IndyConstants;
 import org.hyperledger.indy.sdk.LibIndy;
+import org.hyperledger.indy.sdk.did.Did;
+import org.hyperledger.indy.sdk.did.DidJSONParameters.CreateAndStoreMyDidJSONParameter;
+import org.hyperledger.indy.sdk.did.DidResults.CreateAndStoreMyDidResult;
 import org.hyperledger.indy.sdk.ledger.Ledger;
 import org.hyperledger.indy.sdk.pool.Pool;
 import org.hyperledger.indy.sdk.pool.PoolJSONParameters.OpenPoolLedgerJSONParameter;
-import org.hyperledger.indy.sdk.signus.Signus;
-import org.hyperledger.indy.sdk.signus.SignusJSONParameters.CreateAndStoreMyDidJSONParameter;
-import org.hyperledger.indy.sdk.signus.SignusResults.CreateAndStoreMyDidResult;
 import org.hyperledger.indy.sdk.wallet.Wallet;
 
 public class Sovrin {
@@ -33,12 +33,12 @@ public class Sovrin {
 		// create TRUSTEE DID
 
 		CreateAndStoreMyDidJSONParameter createAndStoreMyDidJSONParameterTrustee = new CreateAndStoreMyDidJSONParameter(null, TRUSTEE_SEED, null, null);
-		Signus.createAndStoreMyDid(walletTrustee, createAndStoreMyDidJSONParameterTrustee.toJson()).get();
+		Did.createAndStoreMyDid(walletTrustee, createAndStoreMyDidJSONParameterTrustee.toJson()).get();
 
 		// create USER DID
 
 		CreateAndStoreMyDidJSONParameter createAndStoreMyDidJSONParameter = new CreateAndStoreMyDidJSONParameter(null, userSeed, null, null);
-		CreateAndStoreMyDidResult createAndStoreMyDidResult = Signus.createAndStoreMyDid(walletUser, createAndStoreMyDidJSONParameter.toJson()).get();
+		CreateAndStoreMyDidResult createAndStoreMyDidResult = Did.createAndStoreMyDid(walletUser, createAndStoreMyDidJSONParameter.toJson()).get();
 
 		String userDid = createAndStoreMyDidResult.getDid();
 		String userVerkey = createAndStoreMyDidResult.getVerkey();
