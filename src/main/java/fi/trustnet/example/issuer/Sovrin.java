@@ -1,7 +1,5 @@
 package fi.trustnet.example.issuer;
 
-import java.io.File;
-
 import org.hyperledger.indy.sdk.IndyConstants;
 import org.hyperledger.indy.sdk.LibIndy;
 import org.hyperledger.indy.sdk.did.Did;
@@ -20,7 +18,7 @@ public class Sovrin {
 
 	static String createDid(String userSeed) throws Exception {
 
-		if (! LibIndy.isInitialized()) LibIndy.init(new File("./lib/libindy.so"));
+		if (! LibIndy.isInitialized()) LibIndy.init("./lib/");
 
 		// open pool and wallets
 
