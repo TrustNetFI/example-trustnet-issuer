@@ -1,21 +1,17 @@
 package fi.trustnet.example.issuer;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 
-import org.abstractj.kalium.NaCl.Sodium;
-import org.apache.commons.codec.binary.Hex;
 import org.hyperledger.indy.sdk.did.DidResults.CreateAndStoreMyDidResult;
 
 import com.github.jsonldjava.utils.JsonUtils;
 
 import fi.trustnet.verifiablecredentials.VerifiableCredential;
 import info.weboftrust.ldsignatures.LdSignature;
-import info.weboftrust.ldsignatures.crypto.EC25519Provider;
-import info.weboftrust.ldsignatures.signer.Ed25519Signature2018LdSigner;
+import info.weboftrust.ldsignatures.signer.LibIndyEd25519Signature2018LdSigner;
 
-public class ExampleIssuer {
+public class ExampleIssuer2 {
 
 	public static void main(String[] args) throws Exception {
 
@@ -26,9 +22,6 @@ public class ExampleIssuer {
 		// create issuer DID
 
 		String issuerSeed = "0000000000000000000000000Issuer1";
-		byte[] issuerPrivateKey = new byte[Sodium.CRYPTO_SIGN_ED25519_SECRETKEYBYTES];
-		byte[] issuerPublicKey = new byte[Sodium.CRYPTO_SIGN_ED25519_PUBLICKEYBYTES];
-		EC25519Provider.get().generateEC25519KeyPairFromSeed(issuerPublicKey, issuerPrivateKey, issuerSeed.getBytes(StandardCharsets.UTF_8));
 
 		CreateAndStoreMyDidResult issuer = Sovrin.createDid(issuerSeed);
 		String issuerDid = issuer.getDid();
@@ -36,8 +29,6 @@ public class ExampleIssuer {
 
 		System.out.println("Issuer DID: " + issuerDid);
 		System.out.println("Issuer DID Verkey: " + issuerVerkey);
-		System.out.println("Issuer Private Key: " + Hex.encodeHexString(issuerPrivateKey));
-		System.out.println("Issuer Public Key: " + Hex.encodeHexString(issuerPublicKey));
 
 		// get subject DID
 
@@ -71,7 +62,7 @@ public class ExampleIssuer {
 
 		// sign
 
-		Ed25519Signature2018LdSigner signer = new Ed25519Signature2018LdSigner(creator, created, domain, nonce, issuerPrivateKey);
+		LibIndyEd25519Signature2018LdSigner signer = new LibIndyEd25519Signature2018LdSigner(creator, created, domain, nonce, Sovrin.walletIssuer, issuerVerkey);
 		LdSignature ldSignature = signer.sign(verifiableCredential.getJsonLdObject());
 
 		// output
